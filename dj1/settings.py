@@ -27,8 +27,13 @@ SECRET_KEY = '75+=v1rt9-(jg*cv6c2$fq9eh9lquj54s)pqyk3p2l2t+pg=z#'
 # DEBUG = False
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', '192.168.1.103']
+ALLOWED_HOSTS = ['localhost',
+                 '127.0.0.1',
+                 '[::1]',
+                 '192.168.1.103', 'szwana.pythonanywhere.com',
+                 'www.szwana.pythonanywhere.com']
 
+SECURE_SSL_REDIRECT = True
 
 # Application definition
 
@@ -83,6 +88,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'dj1.wsgi.application'
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = '/media/'
 
