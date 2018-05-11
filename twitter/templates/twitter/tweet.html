@@ -1,4 +1,5 @@
 {% load thumbnail %}
+{% load extras %}
 <div class="bg-secondary row mx-1 my-2 rounded">
 
   {% thumbnail tweet.author.profile.avatar "40x40" as im %}
@@ -36,7 +37,11 @@
       </span>
     </div>
 
-    <div class="text-left">{{ tweet.tweet_text|linebreaks }}</div>
+    <div class="text-left">
+      {% with text=tweet.tweet_text|hash %}
+        {{ text|linebreaks }}
+      {% endwith %}
+    </div>
 
     <div class="h4 float-right">
       {% if tweet.author == request.user %}

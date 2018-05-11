@@ -1,3 +1,4 @@
+import re
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
@@ -8,7 +9,7 @@ from django.utils import timezone
 
 from el_pagination.decorators import page_template
 
-from .models import Tweet, Comment
+from .models import Tweet, Comment, Tag
 
 
 @page_template('twitter/tweet_list_page.html')
@@ -39,6 +40,9 @@ def new(request):
     pub_date = timezone.now()
     tweet = Tweet(author=author, pub_date=pub_date, tweet_text=text)
     tweet.save()
+    tags_raw = re.findall(r"#(\w+)", text)
+    tags = Tag.get_or_create_if_not_exists(tags_raw)
+    tweet.tags.add(*tags)
     return HttpResponseRedirect(reverse('twitter:index'))
 
 
@@ -77,4 +81,19 @@ def delete_tweet(request, pk):
         success = False
     return JsonResponse({'success': success})
 
+
+@page_template('twitter/tweet_list_page.html')
+def tags(request, tagname, template='twitter/index.html', extra_context=None):
+    tag = get_object_or_404(Tag, name=tagname)
+    tweets = Tweet.objects.all().filter(tags=tag).order_by('-pub_date') \
+        .annotate(num_comments=Count('comment')) \
+        .extra(select={'direction': 'SELECT direction FROM twitter_vote '
+                                    'WHERE twitter_tweet.id = twitter_vote.tweet_id '
+                                    'AND twitter_vote.voter_id = %s'},
+               select_params=(request.user.id,))
+
+    context = {'tweets': tweets, 'user': request.user}
+    if extra_context is not None:
+        context.update(extra_context)
+    return render(request, template, context)
 

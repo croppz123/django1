@@ -3,11 +3,32 @@ from django.contrib.auth.models import User
 from django.db.models import F
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def get_or_create_if_not_exists(cls, names):
+        tags = []
+        for name in names:
+            try:
+                tag = cls.objects.get(name=name)
+            except cls.DoesNotExist:
+                tag = Tag(name=name)
+                tag.save()
+            tags.append(tag)
+
+        return tags
+
+
 class Tweet(models.Model):
     tweet_text = models.TextField()
     pub_date = models.DateTimeField('date published')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
+    tags = models.ManyToManyField(Tag)
 
     def __str__(self):
         return f'tweet #{self.pk}'
@@ -51,8 +72,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'comment by {self.author.username} on tweet {self.tweet.pk}'
-
-
 
 
 

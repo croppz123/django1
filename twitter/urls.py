@@ -10,6 +10,8 @@ urlpatterns = [
     path('<int:pk>/upvote', views.upvote, name='upvote'),
     path('<int:pk>/downvote', views.downvote, name='downvote'),
     path('<int:pk>/comment', views.add_comment, name='add_comment'),
-    path('<int:pk>/delete', views.delete_tweet, name='delete_tweet')
+    path('<int:pk>/delete', views.delete_tweet, name='delete_tweet'),
+    path('tags/<tagname>', views.tags, name='tags'),
+
 ]
 
