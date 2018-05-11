@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Twitter{% endblock title %}
+
+{% block content %} {% endblock %}
+
+{% load staticfiles %}
+{% block scripts %}
+  {{ block.super }}
+  <script type="text/javascript" src="{% static 'twitter/js/scripts.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,12 @@
+Django==2.0.5
+django-el-pagination==3.2.4
+django-extensions==2.0.7
+django-registration-redux==2.4
+graphviz==0.8.3
+Pillow==5.1.0
+psycopg2==2.7.4
+pydot==1.2.4
+pyparsing==2.2.0
+pytz==2018.4
+six==1.11.0
+sorl-thumbnail==12.4.1

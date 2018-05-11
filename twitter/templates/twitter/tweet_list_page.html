@@ -1,0 +1,7 @@
+{% load el_pagination_tags %}
+
+{% lazy_paginate tweets %}
+{% for tweet in tweets %}
+  {% include "twitter/tweet.html" with detailed_view=0 %}
+{% endfor %}
+{% show_more %}

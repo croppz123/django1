@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<body>
+<h1>{{ article.headline }}</h1>
+<h2>by {{ article.reporter.full_name }} on {{ article.pub_date|date:"F j, Y" }}</h2>
+<p>{{ article.content }}</p>
+</body>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% load thumbnail %}
+<div class="bg-secondary row mx-1 my-2 rounded">
+
+  {% thumbnail tweet.author.profile.avatar "40x40" as im %}
+    <a href="{% url 'core:profile' tweet.author.username %}" class="col- mt-3 ml-3">
+      <img src="{{ im.url }}" >
+    </a>
+  {% endthumbnail %}
+  <div class="col bg-secondary list-group-item mt-2 mb-2 border-0">
+    <div class="list-group-item-heading mb-5">
+      <span class="float-left">
+      <a class="h4 text-warning font-weight-bold" href="{% url 'core:profile' tweet.author.username %}">{{ tweet.author.username }}</a>
+      <span title="{{ tweet.pub_date }}">{{ tweet.pub_date|timesince }} ago</span></span>
+      <span class="h4 float-right">
+        {% if request.user.is_authenticated %}
+          <button id="downvote" class="badge btn-danger"
+            onclick="vote(this, '{% url 'twitter:downvote' tweet.pk %}')"
+            type="button">&minus;</button>
+        {% endif %}
+
+        <span id="score"
+        {% if tweet.direction == 1 %}
+          class="badge badge-success">
+        {% elif tweet.direction == 0 or tweet.direction == None%}
+          class="badge badge-dark">
+        {% elif tweet.direction == -1 %}
+          class="badge badge-danger">
+        {% endif %}
+        {% if tweet.score > 0 %}+{% endif %}{{ tweet.score }}</span>
+
+        {% if request.user.is_authenticated %}
+          <button id="upvote" class="badge btn-success"
+            onclick="vote(this, '{% url 'twitter:upvote' tweet.pk %}')"
+            type="button">+</button>
+        {% endif %}
+      </span>
+    </div>
+
+    <div class="text-left">{{ tweet.tweet_text|linebreaks }}</div>
+
+    <div class="h4 float-right">
+      {% if tweet.author == request.user %}
+      <button onclick="delete_tweet(this, '{% url 'twitter:delete_tweet' tweet.pk %}', {{ detailed_view }})"
+          class="badge badge-dark" type="button">delete</button>
+      {% endif %}
+      {% if detailed_view == 0 %}
+      <button onclick="location.href='{% url 'twitter:detail' tweet.pk %}'" class="badge badge-dark" type="button">
+        {{ tweet.num_comments }} comment{{ tweet.num_comments|pluralize }}
+      </button>
+      {% endif %}
+    </div>
+
+  </div>
+
+
+</div>

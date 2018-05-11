@@ -1,0 +1,32 @@
+{% extends "twitter/base.html" %}
+
+{% block content %}
+  <div class="container">
+
+    {% include "twitter/tweet.html" with detailed_view=1 %}
+    <div class="list-group-item bg-dark border-0">
+      {% for comment in tweet.comment_set.all %}
+        <div class="list-group-item bg-secondary text-light mb-2">
+          <div class="list-group-item-heading mb-5">
+            <span class="float-left">
+            <a class="h4 text-warning font-weight-bold"
+               href="{% url 'core:profile' tweet.author.username %}">{{ comment.author.username }}</a>
+            <span title="{{ comment.pub_date }}">{{ comment.pub_date|timesince }} ago</span></span>
+          </div>
+          <div class="text-left">{{ comment.text|linebreaks }}</div>
+        </div>
+      {% endfor %}
+
+      {% if request.user.is_authenticated %}
+        <div class="list-group-item bg-secondary">
+          <form id="new_comment" action="{% url 'twitter:add_comment' tweet.pk %}" method="post">
+            {% csrf_token %}
+            <textarea class="form-control bg-light mb-1" rows="3" id="text" name="text" form="new_comment"
+                      placeholder="Add your comment..." style="resize:vertical;"></textarea>
+            <input class="btn btn-primary" type="submit" value="Send"/>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'twitter/base.html' %}
+
+
+{% block content %}
+  <h1 id="header">LATEST TWEETS</h1>
+
+  {% if request.user.is_authenticated %}
+    <form id="new_tweet" action="{% url 'twitter:new' %}" method="post" class="mb-3">
+      {% csrf_token %}
+      <textarea class="form-control bg-light mb-1" rows="5" id="text" name="text" form="new_tweet" placeholder="What's up?"
+                style="resize:vertical;"></textarea>
+      <input class="btn btn-primary" type="submit" value="Send"/>
+    </form>
+  {% endif %}
+
+  <div class="container">
+    {% include page_template %}
+  </div>
+
+{% endblock %}
+
+
+{% load staticfiles %}
+{% block scripts %}
+  {{ block.super }}
+  <script src="{% static 'twitter/js/el-pagination.js' %}"></script>
+  <script>$.endlessPaginate({paginateOnScroll: true});</script>
+{% endblock %}

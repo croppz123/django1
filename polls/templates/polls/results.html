@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Poll results{% endblock %}
+
+{% block content %}
+<h1 id="header">{{ question.question_text }}</h1>
+<ul>
+  {% for choice in question.choice_set.all %}
+  <li>
+    {{ choice.choice_text }} -
+    {{ percentage|lookup:choice.id }}%
+    ({{ choice.votes }} vote{{ choice.votes|pluralize }})
+  </li>
+  {% endfor %}
+</ul>
+  <button class="btn btn-link"
+          onclick="location.href='{% url 'polls:index' %}'"
+          type="button">
+    Back to polls
+  </button>
+
+{% endblock %}
