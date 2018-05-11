@@ -6,8 +6,10 @@ __pycache__/
 local_settings.py
 db.sqlite3
 media
+
 /static
-/dj1/settings.py
+dj1/settings.py
+
 
 ### PyCharm ###
 .idea
