@@ -28,7 +28,7 @@ class Tweet(models.Model):
     pub_date = models.DateTimeField('date published')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, null=True, blank=True)
 
     def __str__(self):
         return f'tweet #{self.pk}'
@@ -63,10 +63,9 @@ class Vote(models.Model):
     @classmethod
     def get_vote_direction(cls, tweet, user):
         try:
-            direction = cls.objects.get(tweet=tweet, voter=user).direction
+            return cls.objects.get(tweet=tweet, voter=user).direction
         except cls.DoesNotExist:
-            direction = 0
-        return direction
+            return 0
 
     def __str__(self):
         return f'vote by {self.voter.username} on tweet {self.tweet.pk}'
