@@ -40,7 +40,7 @@ def detail(request, pk):
 @login_required
 def new(request):
     author = request.user
-    text = request.POST['text']
+    text = request.POST['text'] + ' '
     pub_date = timezone.now()
     tweet = Tweet(author=author, pub_date=pub_date, tweet_text=text)
     tweet.save()
