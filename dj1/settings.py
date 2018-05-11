@@ -30,10 +30,9 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost',
                  '127.0.0.1',
                  '[::1]',
-                 '192.168.1.103', 'szwana.pythonanywhere.com',
-                 'www.szwana.pythonanywhere.com']
+                 ]
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 
 # Application definition
 

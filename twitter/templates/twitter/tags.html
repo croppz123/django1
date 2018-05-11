@@ -1,0 +1,19 @@
+{% extends 'twitter/base.html' %}
+
+
+{% block content %}
+  <h1 id="header">LATEST TWEETS IN #{{ tagname }}</h1>
+
+  <div class="container">
+    {% include page_template %}
+  </div>
+
+{% endblock %}
+
+
+{% load staticfiles %}
+{% block scripts %}
+  {{ block.super }}
+  <script src="{% static 'twitter/js/el-pagination.js' %}"></script>
+  <script>$.endlessPaginate({paginateOnScroll: true});</script>
+{% endblock %}

@@ -21,7 +21,7 @@ def index(request, template='twitter/index.html', extra_context=None):
                                     'AND twitter_vote.voter_id = %s'},
                select_params=(request.user.id, ))
 
-    context = {'tweets': tweets, 'user': request.user}
+    context = {'header': 'LATEST TWEETS', 'tweets': tweets, 'user': request.user}
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template, context)
@@ -41,8 +41,8 @@ def new(request):
     tweet = Tweet(author=author, pub_date=pub_date, tweet_text=text)
     tweet.save()
     tags_raw = re.findall(r"#(\w+)", text)
-    tags = Tag.get_or_create_if_not_exists(tags_raw)
-    tweet.tags.add(*tags)
+    tag_list = Tag.get_or_create_if_not_exists(tags_raw)
+    tweet.tags.add(*tag_list)
     return HttpResponseRedirect(reverse('twitter:index'))
 
 
@@ -83,7 +83,7 @@ def delete_tweet(request, pk):
 
 
 @page_template('twitter/tweet_list_page.html')
-def tags(request, tagname, template='twitter/index.html', extra_context=None):
+def tags(request, tagname, template='twitter/tags.html', extra_context=None):
     tag = get_object_or_404(Tag, name=tagname)
     tweets = Tweet.objects.all().filter(tags=tag).order_by('-pub_date') \
         .annotate(num_comments=Count('comment')) \
@@ -92,7 +92,7 @@ def tags(request, tagname, template='twitter/index.html', extra_context=None):
                                     'AND twitter_vote.voter_id = %s'},
                select_params=(request.user.id,))
 
-    context = {'tweets': tweets, 'user': request.user}
+    context = {'tagname': tagname.upper(), 'tweets': tweets, 'user': request.user}
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template, context)
