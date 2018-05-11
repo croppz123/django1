@@ -44,8 +44,9 @@ def new(request):
     pub_date = timezone.now()
     tweet = Tweet(author=author, pub_date=pub_date, tweet_text=text)
     tweet.save()
-    tags_raw = re.findall(r"#(\w+)", text)
+    tags_raw = re.findall(r"#(\w+)\s", text)
     tag_list = Tag.get_or_create_if_not_exists(tags_raw)
+    print(tag_list)
     tweet.tags.add(*tag_list)
     return HttpResponseRedirect(reverse('twitter:index'))
 

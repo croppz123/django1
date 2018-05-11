@@ -10,10 +10,10 @@ register = template.Library()
 
 def create_hashtag_link(tag):
     url = reverse('twitter:tags', args=(tag, ))
-    return f'#<a href="{url}" class="text-warning">{tag}</a>'
+    return f'#<a href="{url}" class="text-warning">{tag}</a> '
 
 
 @register.filter(name='hash')
 def hashtag_links(tweet_text):
-    return mark_safe(re.sub(r"#(\w+\s)", lambda t: create_hashtag_link(t.group(1)), escape(tweet_text)))
+    return mark_safe(re.sub(r"#(\w+)\s", lambda t: create_hashtag_link(t.group(1)), escape(tweet_text)))
 
