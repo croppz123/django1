@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from el_pagination.decorators import page_template
 
-from .models import Tweet, Comment, Tag
+from .models import Tweet, Comment, Tag, Vote
 
 
 @page_template('twitter/tweet_list_page.html')
@@ -29,6 +29,10 @@ def index(request, template='twitter/index.html', extra_context=None):
 
 def detail(request, pk):
     tweet = get_object_or_404(Tweet, pk=pk)
+    if request.user.is_authenticated:
+        tweet.direction = Vote.get_vote_direction(tweet=tweet, user=request.user)
+    else:
+        tweet.direction = 0
     context = {'tweet': tweet}
     return render(request, 'twitter/detail.html', context)
 

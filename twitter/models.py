@@ -60,6 +60,14 @@ class Vote(models.Model):
     voter = models.ForeignKey(User, on_delete=models.CASCADE)
     direction = models.IntegerField(default=0, choices=[(-1, -1), (0, 0), (1, 1)])
 
+    @classmethod
+    def get_vote_direction(cls, tweet, user):
+        try:
+            direction = cls.objects.get(tweet=tweet, voter=user).direction
+        except cls.DoesNotExist:
+            direction = 0
+        return direction
+
     def __str__(self):
         return f'vote by {self.voter.username} on tweet {self.tweet.pk}'
 
