@@ -29,6 +29,11 @@
       </ul>
       <ul class="nav navbar-nav ml-auto">
         {% if user.is_authenticated %}
+          {% if request.user.is_superuser %}
+            <li>
+              <a class="nav-link" href="{% url 'admin:index' %}">Admin panel</a>
+            </li>
+          {% endif %}
         <li>
           <a class="nav-link" href="{% url 'core:profile' request.user.username %}">My profile</a>
         </li>
