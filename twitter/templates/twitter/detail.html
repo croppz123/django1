@@ -1,10 +1,14 @@
 {% extends "twitter/base.html" %}
 
+
 {% block content %}
   <div class="container">
 
     {% include "twitter/tweet.html" with detailed_view=1 %}
+
+
     <div class="list-group-item bg-dark border-0">
+
       {% for comment in tweet.comment_set.all %}
         <div class="list-group-item bg-secondary text-light mb-2">
           <div class="list-group-item-heading mb-5">
@@ -27,6 +31,7 @@
           </form>
         </div>
       {% endif %}
+
     </div>
   </div>
 {% endblock %}

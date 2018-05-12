@@ -1,12 +1,17 @@
 {% load thumbnail %}
 {% load extras %}
+
+
 <div class="bg-secondary row mx-1 my-2 rounded" style="word-wrap: break-word;">
 
+  <div  class="col- mt-3 ml-3">
   {% thumbnail tweet.author.profile.avatar "40x40" as im %}
-    <a href="{% url 'core:profile' tweet.author.username %}" class="col- mt-3 ml-3">
+    <a href="{% url 'core:profile' tweet.author.username %}">
       <img src="{{ im.url }}" >
     </a>
   {% endthumbnail %}
+  </div>
+
   <div class="col bg-secondary list-group-item mt-2 mb-2 border-0">
     <div class="list-group-item-heading mb-5">
       <span class="float-left">
@@ -56,10 +61,7 @@
         {{ tweet.num_comments }} comment{{ tweet.num_comments|pluralize }}
       </button>
       {% endif %}
-
     </div>
 
   </div>
-
-
 </div>
