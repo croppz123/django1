@@ -15,6 +15,10 @@ def index(request):
     return render(request, 'index.html', {})
 
 
+def my_profile(request):
+    return profile(request, username=request.user.username)
+
+
 @page_template('twitter/tweet_list_page.html')
 def profile(request, username=" ", template='profile.html', extra_context=None):
     user = get_object_or_404(User, username=username)

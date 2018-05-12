@@ -16,9 +16,9 @@
 
     <div class="col-sm text-left">
       <h4 class="text-warning">Info</h4>
-      <p>Name: {{ user.profile.name }}</p>
-      <p>Age: {{ user.profile.age }}</p>
-      <p>From: {{ user.profile.location }}</p>
+      <p>Name: {{ user.profile.name|default:"Unknown" }}</p>
+      <p>Age: {{ user.profile.age|default:"Unknown" }}</p>
+      <p>From: {{ user.profile.location|default:"Unknown" }}</p>
       <p title="{{ user.profile.join_date }}">Member for {{ user.profile.join_date|timesince }}</p>
     </div>
 
@@ -43,7 +43,7 @@
 
   <h2 class="my-5">LATEST TWEETS BY <span class="text-warning">{{ user.username }}</span></h2>
 
-  <div class="container">
+  <div class="container mb-5">
     {% include page_template %}
   </div>
 {% endblock %}
