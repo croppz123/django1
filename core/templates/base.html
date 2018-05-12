@@ -28,7 +28,7 @@
           <a class="nav-link" href="{% url 'twitter:index' %}">Twitter</a></li>
       </ul>
       <ul class="nav navbar-nav ml-auto">
-        {% if user.is_authenticated %}
+        {% if request.user.is_authenticated %}
           {% if request.user.is_superuser %}
             <li>
               <a class="nav-link" href="{% url 'admin:index' %}">Admin panel</a>

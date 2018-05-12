@@ -2,7 +2,7 @@
 
 
 {% block content %}
-  <h1 id="header">LATEST TWEETS</h1>
+  <h1 id="header" class="mt-3 mb-5">LATEST TWEETS</h1>
 
   {% if request.user.is_authenticated %}
     <form id="new_tweet" action="{% url 'twitter:new' %}" method="post" class="mb-3">

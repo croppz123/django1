@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from el_pagination.decorators import page_template
 
+from dj1.settings import MAX_TAG_LENGTH, TAG_REGEX
 from .models import Tweet, Comment, Tag, Vote
 
 
@@ -44,9 +45,11 @@ def new(request):
     pub_date = timezone.now()
     tweet = Tweet(author=author, pub_date=pub_date, tweet_text=text)
     tweet.save()
-    tags_raw = re.findall(r"#(\w+)\s", text)
-    tag_list = Tag.get_or_create_if_not_exists(tags_raw)
-    print(tag_list)
+
+    tags_raw = re.findall(TAG_REGEX, text)
+    tags_filtered = filter(lambda tag: len(tag) <= MAX_TAG_LENGTH, tags_raw)
+    tag_list = Tag.get_or_create_if_not_exists(tags_filtered)
+
     tweet.tags.add(*tag_list)
     return HttpResponseRedirect(reverse('twitter:index'))
 
@@ -79,7 +82,7 @@ def add_comment(request, pk):
 @login_required
 def delete_tweet(request, pk):
     tweet = get_object_or_404(Tweet, pk=pk)
-    if tweet.author == request.user:
+    if tweet.author == request.user or request.user.is_superuser:
         tweet.delete()
         success = True
     else:

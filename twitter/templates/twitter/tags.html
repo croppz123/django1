@@ -2,7 +2,9 @@
 
 
 {% block content %}
-  <h1 id="header">LATEST TWEETS IN #{{ tagname }}</h1>
+<h1 id="header" style="word-wrap: break-word" class="my-5">
+  LATEST TWEETS IN #<span class="text-warning">{{ tagname }}</span>
+</h1>
 
   <div class="container">
     {% include page_template %}

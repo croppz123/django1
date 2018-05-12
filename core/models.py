@@ -11,8 +11,7 @@ from sorl.thumbnail import ImageField
 class Profile(models.Model):
     DEFAULT_AVATAR = 'img/avatar/avatar_def.png'
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=50, blank=True)
-    last_name = models.CharField(max_length=50, blank=True)
+    name = models.CharField(max_length=50, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     country = models.CharField(max_length=20, blank=True)
     city = models.CharField(max_length=35, blank=True)
@@ -24,9 +23,6 @@ class Profile(models.Model):
     def create(sender, user, request, **kwargs):
         profile = Profile(user=user)
         profile.save()
-
-    def full_name(self):
-        return f'{self.first_name} {self.last_name}'
 
     def location(self):
         return ', '.join(filter(None, (self.city, self.country)))

@@ -47,7 +47,7 @@
     </div>
 
     <div class="h4 float-right my-2 mx-2">
-      {% if tweet.author == request.user %}
+      {% if tweet.author == request.user or request.user.is_superuser%}
       <button onclick="delete_tweet(this, '{% url 'twitter:delete_tweet' tweet.pk %}', {{ detailed_view }})"
           class="badge badge-dark" type="button">delete</button>
       {% endif %}

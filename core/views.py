@@ -16,7 +16,7 @@ def index(request):
 
 
 @page_template('twitter/tweet_list_page.html')
-def profile(request, username, template='profile.html', extra_context=None):
+def profile(request, username=" ", template='profile.html', extra_context=None):
     user = get_object_or_404(User, username=username)
     tweets = Tweet.objects.filter(author=user).order_by('-pub_date')\
         .annotate(num_comments=Count('comment'))\
