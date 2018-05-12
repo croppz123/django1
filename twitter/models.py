@@ -28,7 +28,7 @@ class Tweet(models.Model):
     pub_date = models.DateTimeField('date published')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
-    tags = models.ManyToManyField(Tag, null=True, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
         return f'tweet #{self.pk}'
@@ -79,9 +79,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'comment by {self.author.username} on tweet {self.tweet.pk}'
-
-
-
-
-
-

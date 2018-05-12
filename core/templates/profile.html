@@ -1,9 +1,55 @@
 {% extends "base.html" %}
+{% load thumbnail %}
+{% load extras %}
 
 {% block title %}{{ user.username }} - profile{% endblock %}
 
 {% block content %}
+  <div class="jumbotron bg-secondary row " style="word-wrap: break-word;">
+
+    <div class="col-sm-3">
+      <h2 class="text-center text-warning">{{ user.username }}</h2>
+      {% thumbnail user.profile.avatar "150x150" as im %}
+        <img src="{{ im.url }}" />
+      {% endthumbnail %}
+    </div>
+
+    <div class="col-sm-3 text-left">
+      <h4 class="text-warning">Info</h4>
+      <p>Full name: {{ user.profile.full_name }}</p>
+      <p>Age: {{ user.profile.age }}</p>
+      <p>From: {{ user.profile.location }}</p>
+    </div>
+
+    <div class="col-sm-3 text-left">
+      <h4 class="text-warning">About</h4>
+      <p >
+        {{ user.profile.bio|linebreaks }}
+      </p>
+    </div>
+
+    <div class="col-sm-3 text-left">
+      <h4 class="text-warning">Most frequent tags</h4>
+      <h5>
+        {% for tag, freq in tags %}
+          <span class="badge badge-dark">{{ tag|hash }} ({{ freq }})</span>
+        {% endfor %}
+      </h5>
+    </div>
+
+  </div>
+
+<h2 class="my-5">LATEST TWEETS BY <span class="text-warning">{{ user.username }}</span></h2>
+  <div class="container">
+    {% include page_template %}
+  </div>
+
+{% endblock %}
 
 
-
+{% load staticfiles %}
+{% block scripts %}
+  {{ block.super }}
+  <script src="{% static 'twitter/js/el-pagination.js' %}"></script>
+  <script>$.endlessPaginate({paginateOnScroll: true});</script>
 {% endblock %}

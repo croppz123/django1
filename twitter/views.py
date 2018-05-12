@@ -21,7 +21,7 @@ def index(request, template='twitter/index.html', extra_context=None):
                                     'AND twitter_vote.voter_id = %s'},
                select_params=(request.user.id, ))
 
-    context = {'header': 'LATEST TWEETS', 'tweets': tweets, 'user': request.user}
+    context = {'tweets': tweets, 'user': request.user}
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template, context)
@@ -101,4 +101,3 @@ def tags(request, tagname, template='twitter/tags.html', extra_context=None):
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template, context)
-

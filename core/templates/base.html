@@ -30,6 +30,9 @@
       <ul class="nav navbar-nav ml-auto">
         {% if user.is_authenticated %}
         <li>
+          <a class="nav-link" href="{% url 'core:profile' request.user.username %}">My profile</a>
+        </li>
+        <li>
           <a class="nav-link" href="{% url 'auth_logout' %}">Logout</a>
         </li>
         {% else %}
@@ -51,8 +54,9 @@
 
   </body>
 
+  {% load staticfiles %}
   {% block scripts %}
-
+    <script type="text/javascript" src="{% static 'twitter/js/scripts.js' %}"></script>
   {% endblock %}
 
 </html>

@@ -14,4 +14,3 @@ urlpatterns = [
     path('tags/<tagname>', views.tags, name='tags'),
 
 ]
-

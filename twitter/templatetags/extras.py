@@ -16,4 +16,3 @@ def create_hashtag_link(tag):
 @register.filter(name='hash')
 def hashtag_links(tweet_text):
     return mark_safe(re.sub(r"#(\w+)\s", lambda t: create_hashtag_link(t.group(1)), escape(tweet_text)))
-

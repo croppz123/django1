@@ -1,6 +1,6 @@
 {% load thumbnail %}
 {% load extras %}
-<div class="bg-secondary row mx-1 my-2 rounded">
+<div class="bg-secondary row mx-1 my-2 rounded" style="word-wrap: break-word;">
 
   {% thumbnail tweet.author.profile.avatar "40x40" as im %}
     <a href="{% url 'core:profile' tweet.author.username %}" class="col- mt-3 ml-3">
@@ -12,7 +12,16 @@
       <span class="float-left">
       <a class="h4 text-warning font-weight-bold" href="{% url 'core:profile' tweet.author.username %}">{{ tweet.author.username }}</a>
       <span title="{{ tweet.pub_date }}">{{ tweet.pub_date|timesince }} ago</span></span>
-      <span class="h4 float-right">
+    </div>
+
+    <div class="text-left">
+      {% with text=tweet.tweet_text|hash %}
+        {{ text|linebreaks }}
+      {% endwith %}
+    </div>
+
+    <div class="h4 float-right my-2 mx-2">
+      <span>
         {% if request.user.is_authenticated %}
           <button id="downvote" class="badge btn-danger"
             onclick="vote(this, '{% url 'twitter:downvote' tweet.pk %}')"
@@ -37,13 +46,7 @@
       </span>
     </div>
 
-    <div class="text-left">
-      {% with text=tweet.tweet_text|hash %}
-        {{ text|linebreaks }}
-      {% endwith %}
-    </div>
-
-    <div class="h4 float-right">
+    <div class="h4 float-right my-2 mx-2">
       {% if tweet.author == request.user %}
       <button onclick="delete_tweet(this, '{% url 'twitter:delete_tweet' tweet.pk %}', {{ detailed_view }})"
           class="badge badge-dark" type="button">delete</button>
@@ -53,6 +56,7 @@
         {{ tweet.num_comments }} comment{{ tweet.num_comments|pluralize }}
       </button>
       {% endif %}
+
     </div>
 
   </div>
