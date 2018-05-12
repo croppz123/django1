@@ -19,6 +19,7 @@
       <p>Name: {{ user.profile.name }}</p>
       <p>Age: {{ user.profile.age }}</p>
       <p>From: {{ user.profile.location }}</p>
+      <p title="{{ user.profile.join_date }}">Member for {{ user.profile.join_date|timesince }}</p>
     </div>
 
     <div class="col-sm text-left">
