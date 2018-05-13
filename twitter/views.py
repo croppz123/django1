@@ -73,9 +73,13 @@ def add_comment(request, pk):
     comment = Comment(tweet=get_object_or_404(Tweet, pk=pk),
                       author=request.user,
                       pub_date=timezone.now(),
-                      text=request.POST['text'])
+                      text=request.POST['text'] + ' ')
     comment.save()
-    return HttpResponseRedirect(reverse('twitter:detail', args=(pk,)))
+
+    template = loader.get_template('twitter/comment.html')
+    div_render = template.render({'comment': comment}, request)
+
+    return JsonResponse({'success': True, 'div': div_render})
 
 
 @login_required

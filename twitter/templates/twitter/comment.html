@@ -1,0 +1,25 @@
+{% load thumbnail %}
+{% load extras %}
+
+<div class=" bg-secondary text-light ml-4 mr-1 mb-2 rounded row">
+  <div class="col- mt-3 ml-3">
+    {% thumbnail comment.author.profile.avatar "40x40" as im %}
+      <a href="{% url 'core:profile' comment.author.username %}">
+        <img src="{{ im.url }}" >
+      </a>
+    {% endthumbnail %}
+  </div>
+  <div class="col bg-secondary list-group-item mt-2 mb-2 border-0">
+    <div class="list-group-item-heading mb-5">
+      <span class="float-left">
+      <a class="h4 text-warning font-weight-bold"
+         href="{% url 'core:profile' comment.author.username %}">{{ comment.author.username }}</a>
+      <span title="{{ comment.pub_date }}">{{ comment.pub_date|timesince }} ago</span></span>
+    </div>
+    <div class="text-left">
+      {% with text=comment.text|hash %}
+        {{ text|linebreaks }}
+      {% endwith %}
+    </div>
+  </div>
+</div>

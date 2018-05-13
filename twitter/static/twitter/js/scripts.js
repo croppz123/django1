@@ -53,3 +53,19 @@ $("#new_tweet_form").on("submit", function(event) {
         }
     });
 });
+
+$("#new_comment_form").on("submit", function(event) {
+    event.preventDefault();
+    $.ajax({
+        url: "comment/",
+        type: "POST",
+        data: {text : $('#new_comment_text').val(),
+               csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"').val()},
+
+        success : function(json) {
+            $('#new_comment_text').val('');
+            $('div#comments').append(json['div'])
+
+        }
+    });
+});

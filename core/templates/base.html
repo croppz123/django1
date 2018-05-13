@@ -37,7 +37,7 @@
             </li>
           {% endif %}
         <li>
-          <a class="nav-link" href="{% url 'core:profile' request.user.username %}">My profile</a>
+          <a class="nav-link" href="{% url 'core:my_profile' %}">My profile</a>
         </li>
         <li>
           <a class="nav-link" href="{% url 'auth_logout' %}">Logout</a>
