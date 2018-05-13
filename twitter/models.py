@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import F
+from django.db.models import Count
 
 from dj1.settings import MAX_TAG_LENGTH
 
@@ -8,53 +8,51 @@ from dj1.settings import MAX_TAG_LENGTH
 class Tag(models.Model):
     name = models.CharField(max_length=MAX_TAG_LENGTH)
 
-    def __str__(self):
-        return self.name
-
     @classmethod
-    def get_or_create_if_not_exists(cls, names):
+    def get_or_create_from_list(cls, names):
         tags = []
         for name in names:
-            try:
-                tag = cls.objects.get(name=name)
-            except cls.DoesNotExist:
-                tag = Tag(name=name)
-                tag.save()
+            tag, created = cls.objects.get_or_create(name=name)
             tags.append(tag)
 
         return tags
+
+    def __str__(self):
+        return self.name
 
 
 class Tweet(models.Model):
     tweet_text = models.TextField()
     pub_date = models.DateTimeField('date published')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    score = models.IntegerField(default=0)
     tags = models.ManyToManyField(Tag, blank=True)
 
-    def __str__(self):
-        return f'tweet #{self.pk}'
+    @property
+    def score(self):
+        return sum([vote.direction for vote in self.vote_set.all()])
+
+    @classmethod
+    def get_decorated_list(cls, active_user_id, **filters):
+        return cls.objects.all().filter(**filters).order_by('-pub_date') \
+            .annotate(num_comments=Count('comment')) \
+            .extra(select={'direction': 'SELECT direction FROM twitter_vote '
+                                        'WHERE twitter_tweet.id = twitter_vote.tweet_id '
+                                        'AND twitter_vote.voter_id = %s'},
+                   select_params=(active_user_id,))
 
     def make_vote(self, user, direction):
-        try:
-            vote = Vote.objects.get(tweet=self, voter=user)
-        except Vote.DoesNotExist:
-            vote = Vote(tweet=self, voter=user)
+        vote, created = Vote.objects.get_or_create(tweet=self, voter=user)
 
-        if not direction == vote.direction:
-            if vote.direction == 0:  # default value - not voted yet
-                self.score = F('score') + direction
-            else:  # voted before
-                self.score = F('score') + direction * 2
-            vote.direction = direction
-        else:
-            self.score = F('score') - vote.direction
+        if direction == vote.direction:
             vote.direction = 0
+        else:
+            vote.direction = direction
 
         vote.save()
-        self.save()
-        self.refresh_from_db()
         return {'updated_score': self.score, 'direction': vote.direction}
+
+    def __str__(self):
+        return f'tweet #{self.pk} by {self.author}'
 
 
 class Vote(models.Model):
@@ -76,7 +74,7 @@ class Vote(models.Model):
 class Comment(models.Model):
     tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    pub_date = models.DateTimeField('date published')
+    pub_date = models.DateTimeField()
     text = models.TextField()
 
     def __str__(self):

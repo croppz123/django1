@@ -1,9 +1,9 @@
 import re
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
+from django.template import loader
 from django.urls import reverse
 from django.utils import timezone
 
@@ -15,16 +15,13 @@ from .models import Tweet, Comment, Tag, Vote
 
 @page_template('twitter/tweet_list_page.html')
 def index(request, template='twitter/index.html', extra_context=None):
-    tweets = Tweet.objects.all().order_by('-pub_date')\
-        .annotate(num_comments=Count('comment'))\
-        .extra(select={'direction': 'SELECT direction FROM twitter_vote '
-                                    'WHERE twitter_tweet.id = twitter_vote.tweet_id '
-                                    'AND twitter_vote.voter_id = %s'},
-               select_params=(request.user.id, ))
+    tweets = Tweet.get_decorated_list(request.user.id)
+    context = {'tweets': tweets,
+               'user': request.user}
 
-    context = {'tweets': tweets, 'user': request.user}
     if extra_context is not None:
         context.update(extra_context)
+
     return render(request, template, context)
 
 
@@ -40,18 +37,21 @@ def detail(request, pk):
 
 @login_required
 def new(request):
-    author = request.user
     text = request.POST['text'] + ' '
-    pub_date = timezone.now()
-    tweet = Tweet(author=author, pub_date=pub_date, tweet_text=text)
+    tweet = Tweet(author=request.user,
+                  pub_date=timezone.now(),
+                  tweet_text=text)
     tweet.save()
 
     tags_raw = re.findall(TAG_REGEX, text)
     tags_filtered = filter(lambda tag: len(tag) <= MAX_TAG_LENGTH, tags_raw)
-    tag_list = Tag.get_or_create_if_not_exists(tags_filtered)
-
+    tag_list = Tag.get_or_create_from_list(tags_filtered)
     tweet.tags.add(*tag_list)
-    return HttpResponseRedirect(reverse('twitter:index'))
+
+    tweet.num_comments = 0
+    template = loader.get_template('twitter/tweet.html')
+    div_render = template.render({'tweet': tweet, 'detailed_view': 0}, request)
+    return JsonResponse({'success': True, 'div': div_render})
 
 
 @login_required
@@ -70,11 +70,10 @@ def downvote(request, pk):
 
 @login_required
 def add_comment(request, pk):
-    tweet = get_object_or_404(Tweet, pk=pk)
-    author = request.user
-    text = request.POST['text']
-    pub_date = timezone.now()
-    comment = Comment(author=author, pub_date=pub_date, text=text, tweet=tweet)
+    comment = Comment(tweet=get_object_or_404(Tweet, pk=pk),
+                      author=request.user,
+                      pub_date=timezone.now(),
+                      text=request.POST['text'])
     comment.save()
     return HttpResponseRedirect(reverse('twitter:detail', args=(pk,)))
 
@@ -93,14 +92,15 @@ def delete_tweet(request, pk):
 @page_template('twitter/tweet_list_page.html')
 def tags(request, tagname, template='twitter/tags.html', extra_context=None):
     tag = get_object_or_404(Tag, name=tagname)
-    tweets = Tweet.objects.all().filter(tags=tag).order_by('-pub_date') \
-        .annotate(num_comments=Count('comment')) \
-        .extra(select={'direction': 'SELECT direction FROM twitter_vote '
-                                    'WHERE twitter_tweet.id = twitter_vote.tweet_id '
-                                    'AND twitter_vote.voter_id = %s'},
-               select_params=(request.user.id,))
+    tweets = Tweet.get_decorated_list(request.user.id, tags=tag)
+    context = {'tagname': tagname.upper(),
+               'tweets': tweets,
+               'user': request.user}
 
-    context = {'tagname': tagname.upper(), 'tweets': tweets, 'user': request.user}
     if extra_context is not None:
         context.update(extra_context)
+
     return render(request, template, context)
+
+
+

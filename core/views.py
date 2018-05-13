@@ -2,7 +2,6 @@ from collections import Counter
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Count
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from el_pagination.decorators import page_template
@@ -22,12 +21,7 @@ def my_profile(request):
 @page_template('twitter/tweet_list_page.html')
 def profile(request, username=" ", template='profile.html', extra_context=None):
     user = get_object_or_404(User, username=username)
-    tweets = Tweet.objects.filter(author=user).order_by('-pub_date')\
-        .annotate(num_comments=Count('comment'))\
-        .extra(select={'direction': 'SELECT direction FROM twitter_vote '
-                                    'WHERE twitter_tweet.id = twitter_vote.tweet_id '
-                                    'AND twitter_vote.voter_id = %s'},
-               select_params=(request.user.id, ))
+    tweets = Tweet.get_decorated_list(request.user.id, author=user)
     tags = Counter([f'#{tag.name} ' for tweet in tweets for tag in tweet.tags.all()]).most_common(20)
     context = {'user': user, 'tweets': tweets, 'tags': tags}
     if extra_context is not None:

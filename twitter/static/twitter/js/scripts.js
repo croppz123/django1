@@ -22,16 +22,34 @@ function vote(element, callback_url) {
     });
 }
 
+
 function delete_tweet(element, callback_url, in_detailed_view) {
-    $.ajax(callback_url, {
-        success: function(data) {
-            if (window.confirm("Are you sure?")) {
+    if ( window.confirm("Are you sure?") ) {
+        $.ajax(callback_url, {
+            success: function(data) {
                 if (in_detailed_view) {
                     window.location.replace("/twitter");
                 } else {
                     $(element).closest('div.row').remove();
                 }
             }
+        });
+    }
+}
+
+
+$("#new_tweet_form").on("submit", function(event) {
+    event.preventDefault();
+    $.ajax({
+        url: "new/",
+        type: "POST",
+        data: {text : $('#new_tweet_text').val(),
+               csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"').val()},
+
+        success : function(json) {
+            $('#new_tweet_text').val('');
+            $('div#tweet_list').prepend(json['div'])
+
         }
     });
-}
+});

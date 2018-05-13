@@ -5,15 +5,16 @@
   <h1 id="header" class="mt-3 mb-5">LATEST TWEETS</h1>
 
   {% if request.user.is_authenticated %}
-    <form id="new_tweet" action="{% url 'twitter:new' %}" method="post" class="mb-3">
+    <form id="new_tweet_form" action="#" method="post" class="mb-3">
       {% csrf_token %}
-      <textarea class="form-control bg-light mb-1" rows="5" id="text" name="text" form="new_tweet" placeholder="What's up?"
+      <textarea class="form-control bg-light mb-1" rows="5" id="new_tweet_text"
+                name="text" form="new_tweet_form" placeholder="What's up?"
                 style="resize:vertical;"></textarea>
       <input class="btn btn-primary" type="submit" value="Send"/>
     </form>
   {% endif %}
 
-  <div class="container mb-5">
+  <div id="tweet_list" class="container mb-5">
     {% include page_template %}
   </div>
 {% endblock %}
