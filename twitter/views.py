@@ -1,10 +1,9 @@
 import re
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.template import loader
-from django.urls import reverse
 from django.utils import timezone
 
 from el_pagination.decorators import page_template
@@ -95,8 +94,13 @@ def delete_tweet(request, pk):
 
 @page_template('twitter/tweet_list_page.html')
 def tags(request, tagname, template='twitter/tags.html', extra_context=None):
-    tag = get_object_or_404(Tag, name=tagname)
-    tweets = Tweet.get_decorated_list(request.user.id, tags=tag)
+    try:
+        tag = Tag.objects.get(name=tagname)
+    except Tag.DoesNotExist:
+        tweets = []
+    else:
+        tweets = Tweet.get_decorated_list(request.user.id, tags=tag)
+
     context = {'tagname': tagname.upper(),
                'tweets': tweets,
                'user': request.user}

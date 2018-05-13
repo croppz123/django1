@@ -3,7 +3,11 @@
 
 {% block content %}
   <h1 id="header" style="word-wrap: break-word" class="my-5">
-    LATEST TWEETS IN #<span class="text-warning">{{ tagname }}</span>
+    {% if tweets %}
+      LATEST TWEETS IN #<span class="text-warning">{{ tagname }}</span>
+    {% else %}
+      TAG #<span class="text-warning">{{ tagname }}</span> IS EMPTY
+    {% endif %}
   </h1>
 
   <div class="container mb-5">
