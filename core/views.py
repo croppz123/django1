@@ -2,8 +2,9 @@ from collections import Counter
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
 from el_pagination.decorators import page_template
 
 from core.forms import ProfileForm
@@ -33,13 +34,20 @@ def profile(request, username=" ", template='profile/view.html', extra_context=N
 @login_required
 def profile_edition(request):
     if request.method == 'POST':
-        pass
+        form = ProfileForm(request.POST)
+        if form.is_valid():
+            profile = request.user.profile
+            profile.name = request.POST['name']
+            profile.city = request.POST['city']
+            profile.country = request.POST['country']
+            profile.birth_date = request.POST['birth_date']
+            profile.bio = request.POST['bio']
+            profile.save()
+            return HttpResponseRedirect(reverse('core:my_profile'))
     else:
-        pass
-
-    form = ProfileForm(instance=request.user.profile)
-    context = {'form': form}
-    return render(request, 'profile/edition.html', context)
+        form = ProfileForm(instance=request.user.profile)
+        context = {'form': form}
+        return render(request, 'profile/edition.html', context)
 
 
 @login_required
