@@ -10,12 +10,10 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = ['name', 'birth_date', 'city', 'country', 'birth_date', 'bio']
         widgets = {'country': CountrySelectWidget(),
-                   'birth_date': DatePickerInput(
-                       options={'changeMonth': True, 'changeYear': True}),
-                   'bio': forms.Textarea(attrs={'rows': 6,
-                                                'style': 'resize: none;',
-                                                'maxlength': Profile._meta.get_field('bio').max_length})
-                   }
+                   'birth_date': DatePickerInput(options={'dateFormat': 'yy-mm-dd', 'changeMonth': True,
+                                                          'changeYear': True}),
+                   'bio': forms.Textarea(attrs={'rows': 6, 'style': 'resize: none;',
+                                                'maxlength': Profile._meta.get_field('bio').max_length})}
 
 
 
