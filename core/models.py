@@ -21,7 +21,7 @@ class Profile(models.Model):
 
     @property
     def location(self):
-        return ', '.join(filter(None, (self.city, self.country)))
+        return ', '.join(filter(None, (self.city, str(self.country))))
 
     @property
     def age(self):
