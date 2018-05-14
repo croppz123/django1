@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.utils import timezone
+from django_countries.fields import CountryField
 
 from registration.signals import user_registered
 from sorl.thumbnail import ImageField
@@ -13,8 +14,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, blank=True)
     birth_date = models.DateField(null=True, blank=True)
-    join_date = models.DateTimeField()
-    country = models.CharField(max_length=25, blank=True)
+    country = CountryField(null=True, blank=True)
     city = models.CharField(max_length=35, blank=True)
     bio = models.CharField(max_length=220, blank=True)
     avatar = ImageField(upload_to='img/avatar', default=DEFAULT_AVATAR_PATH)
@@ -35,7 +35,7 @@ class Profile(models.Model):
     @staticmethod
     @receiver(user_registered)
     def create(sender, user, request, **kwargs):
-        profile = Profile(user=user, join_date=timezone.now())
+        profile = Profile(user=user)
         profile.save()
 
     def __str__(self):

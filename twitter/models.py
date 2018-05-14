@@ -49,7 +49,9 @@ class Tweet(models.Model):
             vote.direction = direction
 
         vote.save()
-        return {'updated_score': self.score, 'direction': vote.direction}
+        return {'updated_score': self.score,
+                'direction': vote.direction,
+                'created': created}
 
     def __str__(self):
         return f'tweet #{self.pk} by {self.author}'

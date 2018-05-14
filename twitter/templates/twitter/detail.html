@@ -13,7 +13,7 @@
     </div>
     {% if request.user.is_authenticated %}
       <div class="list-group-item bg-secondary mb-5 ml-4 mr-1 rounded">
-        <form id="new_comment_form" action="#" method="post">
+        <form id="new_comment_form">
           {% csrf_token %}
           <textarea class="form-control bg-light mb-1" rows="3" id="new_comment_text" name="text" form="new_comment_form"
                     placeholder="Add your comment..." style="resize:vertical;"></textarea>

@@ -19,7 +19,10 @@
       <p>Name: {{ user.profile.name|default:"Unknown" }}</p>
       <p>Age: {{ user.profile.age|default:"Unknown" }}</p>
       <p>From: {{ user.profile.location|default:"Unknown" }}</p>
-      <p title="{{ user.profile.join_date }}">Member for {{ user.profile.join_date|timesince }}</p>
+      <p title="{{ user.date_joined }}">Member for {{ user.date_joined|timesince }}</p>
+      {% if user == request.user %}
+        <p><a class="btn btn-dark" href="{% url 'core:profile_edition' %}">profile edition</a></p>
+      {% endif %}
     </div>
 
     <div class="col-sm text-left">

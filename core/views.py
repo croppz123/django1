@@ -6,9 +6,10 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from el_pagination.decorators import page_template
 
+from core.forms import ProfileForm
 from core.models import Profile
 from twitter.models import Tweet
-
+from dj1.settings import DEFAULT_AVATAR_PATH
 
 def index(request):
     return render(request, 'index.html', {})
@@ -19,7 +20,7 @@ def my_profile(request):
 
 
 @page_template('twitter/tweet_list_page.html')
-def profile(request, username=" ", template='profile.html', extra_context=None):
+def profile(request, username=" ", template='profile/view.html', extra_context=None):
     user = get_object_or_404(User, username=username)
     tweets = Tweet.get_decorated_list(request.user.id, author=user)
     tags = Counter([f'#{tag.name} ' for tweet in tweets for tag in tweet.tags.all()]).most_common(20)
@@ -30,8 +31,20 @@ def profile(request, username=" ", template='profile.html', extra_context=None):
 
 
 @login_required
+def profile_edition(request):
+    if request.method == 'POST':
+        pass
+    else:
+        pass
+
+    form = ProfileForm(instance=request.user.profile)
+    context = {'form': form}
+    return render(request, 'profile/edition.html', context)
+
+
+@login_required
 def remove_avatar(request):
     request.user.profile.avatar.delete(save=True)
-    request.user.profile.avatar = Profile.DEFAULT_AVATAR
+    request.user.profile.avatar = DEFAULT_AVATAR_PATH
     request.user.profile.save()
     return JsonResponse({'success': True})
