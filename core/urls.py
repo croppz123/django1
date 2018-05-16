@@ -9,5 +9,6 @@ urlpatterns = [
     path('profile/', views.my_profile,  name='my_profile'),
     path('profile/<username>/', views.profile,  name='profile'),
     path('settings/profile/', views.profile_edition, name='profile_edition'),
-    path('settings/delete_avatar/', views.remove_avatar, name='del_avatar'),
+    path('settings/avatar/', views.avatar, name='avatar'),
+    path('settings/avatar/delete', views.av_del),
 ]

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Profile edition{% endblock %}
+
+
+
+{% block content %}
+
+  <form class="inline-block my-5" >
+    <img class="mb-2" src="{{ request.user.profile.avatar.url }}"><br/>
+    {% csrf_token %}
+    <button type="button" class="btn btn-secondary" onclick="delete_avatar()">delete avatar</button>
+  </form>
+
+  <form class="inline-block my-5" method="POST"  enctype="multipart/form-data">
+    {{ form.non_field_errors }}
+    {% csrf_token %}
+    <div class="form-group justify-content-center">
+        {{ form.avatar.errors }}
+        {{ form.avatar }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+
+{% endblock %}

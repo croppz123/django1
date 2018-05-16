@@ -12,6 +12,9 @@
       {% thumbnail user.profile.avatar "150x150" as im %}
         <img src="{{ im.url }}" />
       {% endthumbnail %}
+      {% if user == request.user %}
+      <p><a class="btn btn-dark mt-2" href="{% url 'core:avatar' %}">Change avatar</a></p>
+      {% endif %}
     </div>
 
     <div class="col-sm text-left">
@@ -21,7 +24,7 @@
       <p>From: {{ user.profile.location|default:"Unknown" }}</p>
       <p title="{{ user.date_joined }}">Member for {{ user.date_joined|timesince }}</p>
       {% if user == request.user %}
-        <p><a class="btn btn-dark" href="{% url 'core:profile_edition' %}">profile edition</a></p>
+        <p><a class="btn btn-dark mt-2" href="{% url 'core:profile_edition' %}">Profile edition</a></p>
       {% endif %}
     </div>
 

@@ -69,3 +69,18 @@ $("#new_comment_form").on("submit", function(event) {
         }
     });
 });
+
+
+function delete_avatar() {
+    if ( window.confirm("Are you sure?") ) {
+        $.ajax({
+            url:'delete',
+            type: 'POST',
+            data: {csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"').val()},
+
+            success: function(data) {
+                $('img').attr('src', data['new_url']);
+            }
+        })
+    }
+}

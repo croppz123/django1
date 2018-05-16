@@ -7,7 +7,7 @@ from django_countries.fields import CountryField
 from registration.signals import user_registered
 from sorl.thumbnail import ImageField
 
-from dj1.settings import DEFAULT_AVATAR_PATH
+from dj1.settings import DEFAULT_AVATAR, MEDIA_ROOT
 
 
 class Profile(models.Model):
@@ -17,7 +17,7 @@ class Profile(models.Model):
     country = CountryField(null=True, blank=True)
     city = models.CharField(max_length=35, blank=True)
     bio = models.CharField(max_length=220, blank=True)
-    avatar = ImageField(upload_to='img/avatar', default=DEFAULT_AVATAR_PATH)
+    avatar = ImageField(upload_to='img/avatar', default=DEFAULT_AVATAR)
 
     @property
     def location(self):
@@ -37,6 +37,15 @@ class Profile(models.Model):
     def create(sender, user, request, **kwargs):
         profile = Profile(user=user)
         profile.save()
+
+    def delete_avatar(self):
+        if self.avatar != DEFAULT_AVATAR:
+            self.avatar.delete()
+            self.avatar = DEFAULT_AVATAR
+            self.save()
+            return True, None
+        else:
+            return False, 'User has no avatar'
 
     def __str__(self):
         return f'{self.user.username} profile'

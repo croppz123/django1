@@ -16,40 +16,41 @@
 
 
 <form class="inline-block my-5" method="POST">
+  {{ form.non_field_errors }}
   {% csrf_token %}
   <div class="form-group row justify-content-center">
     <label for="name" class="col-sm-2 col-form-label">Name</label>
     <div class="col-sm-4">
-      {{ form.name|add_class:"form-control" }}
+      {{ form.name|add_class:"form-control" }} {{ form.name.errors }}
     </div>
   </div>
 
   <div class="form-group row justify-content-center">
     <label for="birth_date" class="col-sm-2 col-form-label">Birth date</label>
     <div class="col-sm-4">
-      {{ form.birth_date|add_class:"form-control" }}
+      {{ form.birth_date|add_class:"form-control" }} {{ form.birth_date.errors }}
     </div>
   </div>
 
   <div class="form-group row justify-content-center">
     <label for="city" class="col-sm-2 col-form-label">City</label>
     <div class="col-sm-4">
-      {{ form.city|add_class:"form-control" }}
+      {{ form.city|add_class:"form-control" }} {{ form.city.errors }}
     </div>
   </div>
 
   <div class="form-group row justify-content-center">
     <label for="inputPassword3" class="col-sm-2 col-form-label">Country</label>
     <div class="col-sm-4">
-      {{ form.country|add_class:"form-control" }}
+      {{ form.country|add_class:"form-control" }} {{ form.country.errors }}
     </div>
   </div>
 
   <div class="form-group row justify-content-center">
     <label for="bio" class="col-sm-2 col-form-label">About</label>
     <div class="col-sm-4">
-      {{ form.bio|add_class:"form-control" }}
-      <!--<textarea class="form-control" id="bio" rows=5 placeholder="A few words about yourself..."></textarea>-->
+      {{ form.bio|add_class:"form-control" }} {{ form.bio.errors }}
+
     </div>
   </div>
 
